@@ -118,13 +118,33 @@ OECD ve diğer büyük ülkelerde **doğurganlık oranını** etkileyen ekonomik
 - [x] **2.10** Grafikleri `outputs/` klasörüne kaydet (savefig her grafik için mevcut)
 - **Not:** Notebook'u çalıştırmak için: Jupyter'da aç ve "Run All" yap
 
-### ASAMA 3: İstatistiksel Analiz & Hipotez Testleri ❌
-- [ ] **3.1** Pearson & Spearman korelasyon testleri (p-value'larıyla)
-- [ ] **3.2** Hipotez: "Enflasyon arttıkça doğurganlık düşer mi?"
-- [ ] **3.3** Hipotez: "İşsizlik arttıkça doğurganlık düşer mi?"
-- [ ] **3.4** Hipotez: "Evlilik oranı ile doğurganlık arasında pozitif ilişki var mı?"
-- [ ] **3.5** Bölgeler arası ANOVA / Kruskal-Wallis testi
-- [ ] **3.6** Gelir düzeyleri arası karşılaştırma testleri
+### ASAMA 3: İstatistiksel Analiz & Hipotez Testleri ✅
+- [x] **3.1** Pearson & Spearman korelasyon testleri (pooled + within-country)
+- [x] **3.2** Within-country (country-demeaned) korelasyonlar — ana analiz yöntemi
+- [x] **3.3** Lagged within-country korelasyonlar (lag 0-5 yıl) — ekonomik şokların gecikme etkisi
+- [x] **3.4** Yönlü hipotez testleri (H1-H5) within-country + optimal lag ile
+- [x] **3.5** Bölgeler arası ANOVA / Kruskal-Wallis testi (H6)
+- [x] **3.6** Gelir düzeyleri arası Mann-Whitney U testi (H7)
+- [x] **3.7** Post-hoc pairwise karşılaştırmalar (Bonferroni düzeltmesi)
+
+**Analitik Yaklaşım:** Hipotez within-country temporal: "Bir ülkenin ekonomisi kötüye giderse doğurganlık düşer."
+Pooled korelasyonlar between + within karıştırır → country-demeaned korelasyonlar kullanıldı.
+
+**İstatistiksel Bulgular (Within-Country, Spearman):**
+
+| Değişken | Optimal Lag | ρ | p | Karar |
+|---|---|---|---|---|
+| marriage_rate | 0 | +0.42 | <0.001 | ⭐ En güçlü ilişki |
+| gdp_per_capita | 0 | -0.25 | <0.001 | Güçlü (ama trend etkisi olabilir) |
+| inflation | 1 yıl | -0.13 | <0.001 | Anlık maliyet baskısı |
+| unemployment_total | 2 yıl | -0.10 | 0.005 | Gecikmeli güvensizlik etkisi |
+| female_youth_unemployment | — | ≈ 0 | >0.05 | NULL — iki zıt mekanizma birbirini nötralize ediyor |
+
+**Lag Yapısı Yorumu:**
+- Enflasyon etkisi hızlı (0-1 yıl) — fiyat artışını herkes hemen hissediyor
+- İşsizlik etkisi yavaş (2-3 yıl) — aile planlaması kararlarını değiştirmek zaman alıyor
+- Evlilik oranı anlık (0 yıl) — doğrudan kurumsal kanal
+- Kadın gençlik işsizliğinde (A) ekonomik güvensizlik ↓ ve (B) iş gücü dışında olma ↑ mekanizmaları zıt yönde çalışıyor → net etki ≈ 0
 
 ### ASAMA 4: Modelleme ❌
 - [ ] **4.1** Basit doğrusal regresyon (OLS) - her bağımsız değişken için ayrı ayrı

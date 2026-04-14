@@ -1,5 +1,5 @@
 """
-data_cleaning.py - Veri Temizleme ve Ön İşleme Modülü
+data_cleaning.py - Veri Temizleme ve Ön İşleme Modülü 
 =======================================================
 Bu modül final_panel.csv'yi alır ve ML-ready hale getirir:
 
@@ -99,7 +99,7 @@ COUNTRY_GROUP_MAP = {
 # homeownership_rate removed: 53% missing, only 2010-2021 available
 NUMERIC_COLS = [
     "fertility_rate", "inflation", "unemployment_total",
-    "female_youth_unemployment_15_24", "marriage_rate", "gdp_per_capita"
+    "female_labor_force_participation", "marriage_rate", "gdp_per_capita"
 ]
 
 

@@ -4,7 +4,7 @@ data_collection.py - Veri Toplama Modülü
 Bu modül tüm ham verileri toplar ve birleştirir:
 
 Kaynaklar:
-  1. World Bank API v2 → fertility_rate, inflation, unemployment, female_youth_unemployment
+  1. World Bank API v2 → fertility_rate, inflation, unemployment, female_labor_force_participation
   2. OECD Family Database SF3.1 → marriage_rate (crude marriage rate per 1000)
   3. OECD Affordable Housing Database HM1.3 → homeownership_rate (%)
   4. World Bank API → income_level metadata (ülke bazlı)
@@ -418,13 +418,13 @@ def main():
     unemployment_df.to_csv(RAW_DIR / "unemployment_total.csv", index=False)
     print(f"  Raw kaydedildi: unemployment_total.csv ({len(unemployment_df)} satır)")
 
-    female_youth_unemp_df = fetch_world_bank_indicator(
-        "SL.UEM.1524.FE.ZS",
-        "female_youth_unemployment_15_24",
+    female_lfp_df = fetch_world_bank_indicator(
+        "SL.TLF.CACT.FE.ZS",
+        "female_labor_force_participation",
         real_country_codes
     )
-    female_youth_unemp_df.to_csv(RAW_DIR / "female_youth_unemployment_15_24.csv", index=False)
-    print(f"  Raw saved: female_youth_unemployment_15_24.csv ({len(female_youth_unemp_df)} rows)")
+    female_lfp_df.to_csv(RAW_DIR / "female_labor_force_participation.csv", index=False)
+    print(f"  Raw saved: female_labor_force_participation.csv ({len(female_lfp_df)} rows)")
 
     # GDP per capita PPP (purchasing power parity, current international $)
     # PPP adjusts for inflation and exchange rate differences across countries
@@ -441,7 +441,7 @@ def main():
         fertility_df,
         inflation_df,
         unemployment_df,
-        female_youth_unemp_df,
+        female_lfp_df,
         gdp_df
     ]
 
