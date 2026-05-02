@@ -70,6 +70,16 @@ This project goes beyond simple cross-country comparisons by using **within-coun
 | H9 | `wealth_share_top10` | ρ < 0 (one-tailed) | Wealth concentration may weaken long-run family formation incentives |
 | H10 | `income_wealth_ratio` | exploratory | Relative balance between income and wealth concentration may track fertility pressure |
 
+### Current Inequality Findings (Notebook Results)
+
+- `H8` (`income_share_top10`, within-country, lag=0, one-tailed): `ρ = -0.0529`, `p = 0.0617` → **fail to reject H₀**
+- `H9` (`wealth_share_top10`, within-country, lag=0, one-tailed): `ρ = +0.0709`, `p = 0.9807` (for negative-tail test) → **fail to reject H₀**
+- Lag scan (0–5) shows inequality effects are statistically weak and mixed in sign:
+  - `income_share_top10`: best lag `4`, `ρ = +0.0743`, `p = 0.0472`
+  - `wealth_share_top10`: best lag `0`, `ρ = +0.0709`, `p = 0.0386`
+  - `income_wealth_ratio`: best lag `0`, `ρ = -0.0833`, `p = 0.0152`
+- Interpretation: inequality-fertility link in this OECD panel is currently **weak** and does not provide strong support for a robust negative channel.
+
 ### Country Groups
 
 | Group | Countries | Description |
