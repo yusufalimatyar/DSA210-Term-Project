@@ -4,7 +4,7 @@
 
 This project investigates the **economic and social determinants of fertility rates** across 34 OECD countries over the period 2000–2024. The central research question is:
 
-> **When a country's macroeconomic conditions change over time, does its fertility rate respond — and through which channels?**
+> **When a country's macroeconomic conditions and inequality structure change over time, does its fertility rate respond — and through which channels?**
 
 Fertility decline is one of the most pressing demographic challenges facing developed nations. Understanding which economic factors drive this decline — and how quickly they take effect — is critical for informed policy-making.
 
@@ -18,6 +18,9 @@ Fertility decline is one of the most pressing demographic challenges facing deve
 | Female Labor Force Participation (%) | World Bank API | `SL.TLF.CACT.FE.ZS` |
 | GDP per Capita (PPP, $) | World Bank API | `NY.GDP.PCAP.PP.CD` |
 | Marriage Rate (per 1,000) | OECD Family Database SF3.1 | Crude marriage rate |
+| Top 10% Income Share | World Inequality Database (WID) | `sptinc_z` (p90p100) |
+| Top 10% Wealth Share | World Inequality Database (WID) | `shweal_z` (p90p100) |
+| Income/Wealth Ratio | Derived from WID | `income_share_top10 / wealth_share_top10` |
 | Income Level | World Bank API | `incomeLevel.value` |
 | Region Tag | Manual mapping | 9 geographic regions |
 
@@ -25,7 +28,7 @@ Fertility decline is one of the most pressing demographic challenges facing deve
 - **Observations:** 850 country-year rows, 100% complete (no missing values)
 - **Processed data:** `data/processed/final_oecd.csv`
 
-All World Bank indicators are fetched programmatically via the World Bank API v2. OECD marriage rate data is sourced from the [OECD Family Database](https://www.oecd.org/en/data/datasets/oecd-family-database.html).
+All World Bank indicators are fetched programmatically via the World Bank API v2. OECD marriage rate data is sourced from the [OECD Family Database](https://www.oecd.org/en/data/datasets/oecd-family-database.html). Inequality data is sourced from the [World Inequality Database](https://wid.world/data/) and standardized into `data/raw/wid_inequality.csv`.
 
 ## Motivation
 
@@ -45,6 +48,8 @@ This project goes beyond simple cross-country comparisons by using **within-coun
 
 4. **Hypothesis Testing:** Seven directional and group-comparison hypotheses tested using Spearman rank correlations (robust to non-normality), Kruskal-Wallis tests, and Mann-Whitney U tests with Bonferroni correction.
 
+5. **Inequality Extension (completed for data + EDA):** WID variables are merged into the panel (`income_share_top10`, `wealth_share_top10`, `income_wealth_ratio`) and inequality-focused EDA outputs are generated.
+
 ### Hypotheses
 
 | # | Variable | Hypothesis | Mechanism |
@@ -56,6 +61,14 @@ This project goes beyond simple cross-country comparisons by using **within-coun
 | H5 | Marriage Rate | ρ > 0 (one-tailed) | Marriage as the primary institutional pathway to parenthood |
 | H6 | Country Group | Group means differ | Structural differences between developed, transition, and special case countries |
 | H7 | Income Level | Group means differ | High income vs upper-middle income fertility differences |
+
+### Inequality Hypotheses (Current Extension)
+
+| # | Variable | Hypothesis | Mechanism |
+|---|---|---|---|
+| H8 | `income_share_top10` | ρ < 0 (one-tailed) | Higher concentration of income at top decile raises perceived insecurity for median households |
+| H9 | `wealth_share_top10` | ρ < 0 (one-tailed) | Wealth concentration may weaken long-run family formation incentives |
+| H10 | `income_wealth_ratio` | exploratory | Relative balance between income and wealth concentration may track fertility pressure |
 
 ### Country Groups
 
@@ -76,26 +89,43 @@ This project goes beyond simple cross-country comparisons by using **within-coun
 ├── outputs/                  # Generated visualizations
 └── src/
     ├── data_collection.py    # World Bank API + OECD data fetching
-    └── data_cleaning.py      # Filtering, labeling, imputation
+    ├── data_cleaning.py      # Filtering, labeling, imputation
+    └── inequality_eda.py     # Inequality-focused EDA outputs
 ```
 
 ## How to Run
 
-1. **Data collection** (fetches from APIs — requires internet):
+1. **Prepare WID raw file**:
+   - Download WID export (`WID_Data_*.csv`) and place it under `data/raw/`
+   - Alternatively place already standardized `data/raw/wid_inequality.csv`
+
+2. **Data collection** (fetches from APIs — requires internet):
    ```bash
-   python src/data_collection.py
+   python3 src/data_collection.py
    ```
 
-2. **Data cleaning** (processes raw data into analysis-ready format):
+3. **Data cleaning** (processes raw data into analysis-ready format):
    ```bash
-   python src/data_cleaning.py
+   python3 src/data_cleaning.py
    ```
 
-3. **Analysis** (open and run the notebook):
+4. **Run inequality EDA outputs**:
+   ```bash
+   python3 src/inequality_eda.py
+   ```
+
+5. **Analysis** (open and run the notebook):
    ```bash
    jupyter notebook notebooks/analysis.ipynb
    ```
    Then select **Kernel → Restart & Run All**.
+
+## Next Implementation Roadmap (Before ML)
+
+1. Update notebook constants and plots to include all inequality variables.
+2. Re-run within-country lag tests with inequality channels included.
+3. Decide final inequality feature set for modeling (single metric vs multi-metric).
+4. Start modeling stage (OLS / FE / ML) with multicollinearity diagnostics.
 
 ## Requirements
 

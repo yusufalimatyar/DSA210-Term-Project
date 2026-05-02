@@ -4,15 +4,17 @@ data_collection.py - Veri Toplama Modülü
 Bu modül tüm ham verileri toplar ve birleştirir:
 
 Kaynaklar:
-  1. World Bank API v2 → fertility_rate, inflation, unemployment, female_labor_force_participation
+  1. World Bank API v2 → fertility_rate, inflation, unemployment, female_labor_force_participation, gdp_per_capita
   2. OECD Family Database SF3.1 → marriage_rate (crude marriage rate per 1000)
   3. OECD Affordable Housing Database HM1.3 → homeownership_rate (%)
-  4. World Bank API → income_level metadata (ülke bazlı)
+  4. World Inequality Database (WID) → income_share_top10, wealth_share_top10
+  5. World Bank API → income_level metadata (ülke bazlı)
 
 Çıktı:
   data/processed/final_panel.csv — Tüm ülkeler, tüm yıllar (1960-2025), ~14000 satır
 """
 
+import re
 import requests
 import pandas as pd
 from pathlib import Path
@@ -22,6 +24,27 @@ from pathlib import Path
 RAW_DIR = Path("data/raw")
 PROCESSED_DIR = Path("data/processed")
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+
+
+WID_ISO2_TO_ISO3 = {
+    "US": "USA", "CA": "CAN", "GB": "GBR", "DE": "DEU", "FR": "FRA",
+    "IT": "ITA", "ES": "ESP", "NL": "NLD", "BE": "BEL", "CH": "CHE",
+    "AT": "AUT", "SE": "SWE", "NO": "NOR", "DK": "DNK", "FI": "FIN",
+    "IE": "IRL", "PT": "PRT", "GR": "GRC", "PL": "POL", "CZ": "CZE",
+    "HU": "HUN", "SK": "SVK", "SI": "SVN", "EE": "EST", "LV": "LVA",
+    "LT": "LTU", "JP": "JPN", "KR": "KOR", "AU": "AUS", "NZ": "NZL",
+    "MX": "MEX", "CL": "CHL", "CO": "COL", "TR": "TUR",
+}
+
+WID_ISO3_TO_COUNTRY = {
+    "USA": "United States", "CAN": "Canada", "GBR": "United Kingdom", "DEU": "Germany", "FRA": "France",
+    "ITA": "Italy", "ESP": "Spain", "NLD": "Netherlands", "BEL": "Belgium", "CHE": "Switzerland",
+    "AUT": "Austria", "SWE": "Sweden", "NOR": "Norway", "DNK": "Denmark", "FIN": "Finland",
+    "IRL": "Ireland", "PRT": "Portugal", "GRC": "Greece", "POL": "Poland", "CZE": "Czech Republic",
+    "HUN": "Hungary", "SVK": "Slovakia", "SVN": "Slovenia", "EST": "Estonia", "LVA": "Latvia",
+    "LTU": "Lithuania", "JPN": "Japan", "KOR": "South Korea", "AUS": "Australia", "NZL": "New Zealand",
+    "MEX": "Mexico", "CHL": "Chile", "COL": "Colombia", "TUR": "Turkey",
+}
 
 
 def get_real_country_codes():
@@ -99,6 +122,108 @@ def fetch_world_bank_indicator(indicator_code, column_name, real_country_codes):
     df["year"] = df["year"].astype(int)
 
     return df
+
+
+def load_wid_inequality_csv():
+    """
+    WID ham export dosyasını standardize edip inequality verisini yükler.
+
+    Desteklenen girişler:
+      - data/raw/wid_inequality.csv (önceden dönüştürülmüş)
+      - data/raw/WID_Data_*.csv (WID ham export)
+
+    Çıktı sütunları:
+      country, country_code, year, income_share_top10, wealth_share_top10, income_wealth_ratio
+    """
+    standardized_path = RAW_DIR / "wid_inequality.csv"
+
+    if standardized_path.exists():
+        df = pd.read_csv(standardized_path)
+        expected = {
+            "country", "country_code", "year",
+            "income_share_top10", "wealth_share_top10", "income_wealth_ratio",
+        }
+        if not expected.issubset(df.columns):
+            raise ValueError(
+                "wid_inequality.csv içinde şu sütunlar olmalı: "
+                "country, country_code, year, income_share_top10, wealth_share_top10, income_wealth_ratio"
+            )
+        df["year"] = pd.to_numeric(df["year"], errors="coerce")
+        df = df.dropna(subset=["year"]).copy()
+        df["year"] = df["year"].astype(int)
+        return df
+
+    candidates = sorted(RAW_DIR.glob("WID_Data_*.csv"))
+    if not candidates:
+        print("WID dosyası bulunamadı, atlanıyor.")
+        return None
+
+    wid_raw_path = candidates[-1]
+    raw_df = pd.read_csv(wid_raw_path, sep=";", skiprows=1)
+
+    raw_df.columns = [str(c).strip() for c in raw_df.columns]
+    raw_df = raw_df.rename(columns={"Percentile": "Percentile", "Percentile ": "Percentile", "Year": "Year", "Year ": "Year"})
+
+    if "Percentile" in raw_df.columns:
+        raw_df = raw_df[raw_df["Percentile"].astype(str).str.strip() == "p90p100"].copy()
+
+    raw_df["Year"] = pd.to_numeric(raw_df["Year"], errors="coerce")
+    raw_df = raw_df.dropna(subset=["Year"]).copy()
+    raw_df["Year"] = raw_df["Year"].astype(int)
+    raw_df = raw_df[(raw_df["Year"] >= 2000) & (raw_df["Year"] <= 2024)].copy()
+
+    income_cols = {}
+    wealth_cols = {}
+    for col in raw_df.columns:
+        m = re.match(r"^(sptinc_z|shweal_z)_([A-Z]{2})", col)
+        if not m:
+            continue
+        metric, iso2 = m.group(1), m.group(2)
+        iso3 = WID_ISO2_TO_ISO3.get(iso2)
+        if iso3 is None:
+            continue
+        if metric == "sptinc_z":
+            income_cols[iso3] = col
+        elif metric == "shweal_z":
+            wealth_cols[iso3] = col
+
+    records = []
+    for _, row in raw_df.iterrows():
+        year = int(row["Year"])
+        for iso3 in WID_ISO3_TO_COUNTRY:
+            inc_col = income_cols.get(iso3)
+            wea_col = wealth_cols.get(iso3)
+            if not inc_col or not wea_col:
+                continue
+
+            inc_val = pd.to_numeric(row.get(inc_col), errors="coerce")
+            wea_val = pd.to_numeric(row.get(wea_col), errors="coerce")
+            if pd.isna(inc_val) or pd.isna(wea_val):
+                continue
+
+            ratio = inc_val / wea_val if wea_val != 0 else None
+            records.append({
+                "country": WID_ISO3_TO_COUNTRY[iso3],
+                "country_code": iso3,
+                "year": year,
+                "income_share_top10": float(inc_val),
+                "wealth_share_top10": float(wea_val),
+                "income_wealth_ratio": float(ratio) if ratio is not None else None,
+            })
+
+    result = pd.DataFrame(records)
+    if result.empty:
+        print("WID ham dosyası parse edilemedi, atlanıyor.")
+        return None
+
+    result = result.sort_values(["country_code", "year"]).drop_duplicates(
+        subset=["country_code", "year"],
+        keep="last"
+    ).reset_index(drop=True)
+    result.to_csv(standardized_path, index=False)
+    print(f"WID verisi standardize edildi: {standardized_path} ({len(result)} satır)")
+
+    return result
 
 
 def merge_panel(dfs):
@@ -386,7 +511,8 @@ def main():
     1. World Bank API'den ülke kodları ve metadata çek
     2. 4 ekonomik göstergeyi World Bank'tan çek
     3. OECD evlilik ve konut sahipliği verilerini indir/parse et
-    4. Hepsini birleştirip final_panel.csv olarak kaydet
+    4. WID eşitsizlik verisini yükle/standardize et
+    5. Hepsini birleştirip final_panel.csv olarak kaydet
     """
     # Adım 1: Ülke kodları + income_level metadata
     real_country_codes, country_metadata = get_real_country_codes()
@@ -459,7 +585,11 @@ def main():
     if homeownership_df is not None:
         dfs.append(homeownership_df)
 
-    # Adım 4: Tüm veri kaynaklarını birleştir
+    wid_df = load_wid_inequality_csv()
+    if wid_df is not None:
+        dfs.append(wid_df)
+
+    # Adım 5: Tüm veri kaynaklarını birleştir
     final_df = merge_panel(dfs)
 
     # income_level sütununu World Bank metadata'sından ekle

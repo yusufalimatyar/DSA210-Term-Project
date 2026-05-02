@@ -1,0 +1,4 @@
+country_group,fertility_rate,income_share_top10,wealth_share_top10,income_wealth_ratio
+developed,1.695,0.3409,0.5837,0.5872
+special_case,1.2983,0.3617,0.585,0.6207
+transition,1.6217,0.4234,0.6233,0.6699

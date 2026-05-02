@@ -99,7 +99,8 @@ COUNTRY_GROUP_MAP = {
 # homeownership_rate removed: 53% missing, only 2010-2021 available
 NUMERIC_COLS = [
     "fertility_rate", "inflation", "unemployment_total",
-    "female_labor_force_participation", "marriage_rate", "gdp_per_capita"
+    "female_labor_force_participation", "marriage_rate", "gdp_per_capita",
+    "income_share_top10", "wealth_share_top10", "income_wealth_ratio"
 ]
 
 
@@ -249,6 +250,27 @@ def report_groups(df):
         print(f"  {level:<22s}  {count:>4d} satır")
 
 
+def report_inequality_quality(df):
+    """WID eşitsizlik değişkenlerinin kapsama kalitesini raporlar."""
+    vars_ineq = ["income_share_top10", "wealth_share_top10", "income_wealth_ratio"]
+    print("\n=== EŞİTSİZLİK VERİ KALİTESİ ===")
+
+    for col in vars_ineq:
+        if col not in df.columns:
+            print(f"  {col}: bulunamadı")
+            continue
+
+        valid = df[col].notna().sum()
+        pct = valid / len(df) * 100 if len(df) else 0
+        print(f"  {col:<22s} {valid:>4d}/{len(df)} satır ({pct:.1f}%)")
+
+    for col in vars_ineq:
+        if col in df.columns:
+            by_country = df.groupby("country_code")[col].apply(lambda s: s.notna().sum())
+            low_cov = (by_country < 15).sum()
+            print(f"  {col:<22s} düşük kapsama (<15 yıl) ülke sayısı: {low_cov}")
+
+
 def main():
     """
     Ana veri temizleme pipeline'ı:
@@ -304,6 +326,7 @@ def main():
 
     # Raporlar
     report_missing(df_oecd)
+    report_inequality_quality(df_oecd)
     report_groups(df_oecd)
 
     print("\n" + "=" * 60)
