@@ -1,0 +1,4 @@
+split,year_min,year_max,rows
+train,2005,2018,476
+val,2019,2021,102
+test,2022,2024,102

@@ -1,0 +1,9 @@
+Final model selection summary
+Selected model: gradient_boosting_tuned
+Feature set: core_lagged
+CV R2: 0.867673 (+/- 0.027945)
+Validation RMSE: 0.138694
+Validation MAE: 0.107506
+Test RMSE: 0.277675
+Test MAE: 0.230282
+Test R2: -0.756556

@@ -1,0 +1,23 @@
+feature,importance
+cat__country_group_developed,0.23683951258346822
+cat__income_level_High income,0.17102295328601286
+cat__income_level_Upper middle income,0.14308859619696981
+num__wealth_share_top10,0.13840205126357338
+num__female_labor_force_participation,0.07032576011012666
+num__gdp_per_capita,0.06154885273700949
+cat__country_group_special_case,0.029442307379558812
+num__marriage_rate,0.026755082708440722
+num__unemployment_total,0.02572329505557431
+cat__region_tag_Oceania,0.022765321882911062
+num__income_share_top10,0.016842524649571967
+num__income_wealth_ratio,0.014113555394976104
+cat__region_tag_Western Europe,0.014000651730046228
+cat__region_tag_Latin America,0.010294217441475927
+num__inflation,0.006707317052688389
+cat__region_tag_East Asia,0.003688120690301052
+cat__region_tag_Northern Europe,0.002805902814203243
+cat__country_group_transition,0.002026084277301354
+cat__region_tag_Eastern Europe,0.0017947467291947817
+cat__region_tag_North America,0.0017756809142618136
+cat__region_tag_Southern Europe,2.405372293643282e-05
+cat__region_tag_Middle East,1.34113793974042e-05

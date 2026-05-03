@@ -1,0 +1,2 @@
+model,cv_rmse_mean,cv_rmse_std,cv_r2_mean,cv_r2_std,val_r2,val_rmse,val_mae,test_r2,test_rmse,test_mae,feature_set,n_numeric_features,learning_rate,max_depth,n_estimators,subsample
+gradient_boosting_tuned,0.10100506684330497,0.012876338386324262,0.8676732727480253,0.027944845459713222,0.5669199917230932,0.13869398192056254,0.10750556976365609,-0.756556454966294,0.27767537294604494,0.23028197884597784,core_lagged,10,0.05,3.0,500.0,0.8

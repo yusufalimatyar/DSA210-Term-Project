@@ -1,0 +1,84 @@
+{
+  "target": "fertility_rate",
+  "core_features": [
+    "inflation",
+    "unemployment_total",
+    "female_labor_force_participation",
+    "gdp_per_capita",
+    "marriage_rate"
+  ],
+  "optimal_lags": {
+    "marriage_rate": 2,
+    "gdp_per_capita": 5,
+    "female_labor_force_participation": 5,
+    "inflation": 4,
+    "unemployment_total": 2
+  },
+  "feature_sets": {
+    "core": {
+      "numeric": [
+        "inflation",
+        "unemployment_total",
+        "female_labor_force_participation",
+        "gdp_per_capita",
+        "marriage_rate"
+      ],
+      "categorical": [
+        "country_group"
+      ]
+    },
+    "core_lagged": {
+      "numeric": [
+        "inflation",
+        "unemployment_total",
+        "female_labor_force_participation",
+        "gdp_per_capita",
+        "marriage_rate",
+        "marriage_rate_lag2",
+        "gdp_per_capita_lag5",
+        "female_labor_force_participation_lag5",
+        "inflation_lag4",
+        "unemployment_total_lag2"
+      ],
+      "categorical": [
+        "country_group"
+      ]
+    },
+    "demeaned_lagged": {
+      "numeric": [
+        "inflation_dm",
+        "unemployment_total_dm",
+        "female_labor_force_participation_dm",
+        "gdp_per_capita_dm",
+        "marriage_rate_dm",
+        "marriage_rate_lag2_dm",
+        "gdp_per_capita_lag5_dm",
+        "female_labor_force_participation_lag5_dm",
+        "inflation_lag4_dm",
+        "unemployment_total_lag2_dm"
+      ],
+      "categorical": [
+        "country_group"
+      ]
+    }
+  },
+  "categorical_features": [
+    "country_group"
+  ],
+  "split": {
+    "train_max": 2018,
+    "val": [
+      2019,
+      2020,
+      2021
+    ],
+    "test_min": 2022
+  },
+  "models": [
+    "linear_regression",
+    "random_forest",
+    "gradient_boosting"
+  ],
+  "cv": "GroupKFold(n_splits=5, groups=year)",
+  "scaling": "StandardScaler (numeric features)"
+}

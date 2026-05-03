@@ -1,0 +1,26 @@
+{
+  "target": "fertility_rate",
+  "features": [
+    "inflation",
+    "unemployment_total",
+    "female_labor_force_participation",
+    "gdp_per_capita",
+    "marriage_rate",
+    "income_share_top10",
+    "wealth_share_top10",
+    "income_wealth_ratio"
+  ],
+  "split": {
+    "train_year_max": 2018,
+    "val_years": [
+      2019,
+      2020,
+      2021
+    ],
+    "test_year_min": 2022
+  },
+  "models": [
+    "linear_regression",
+    "random_forest"
+  ]
+}

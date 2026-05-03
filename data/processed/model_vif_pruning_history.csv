@@ -1,0 +1,6 @@
+step,max_feature,max_vif,selected_features,action
+0,female_labor_force_participation,33.98462608502876,"inflation,unemployment_total,female_labor_force_participation,gdp_per_capita,marriage_rate,income_share_top10",check_remove
+1,female_labor_force_participation,33.98462608502876,"inflation,unemployment_total,gdp_per_capita,marriage_rate,income_share_top10",removed
+2,marriage_rate,12.33651673987321,"inflation,unemployment_total,gdp_per_capita,marriage_rate,income_share_top10",check_remove
+3,marriage_rate,12.33651673987321,"inflation,unemployment_total,gdp_per_capita,income_share_top10",removed
+4,income_share_top10,8.375391017459838,"inflation,unemployment_total,gdp_per_capita,income_share_top10",stop

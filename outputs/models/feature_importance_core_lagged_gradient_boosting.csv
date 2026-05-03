@@ -1,0 +1,14 @@
+feature,importance
+cat__country_group_special_case,0.26945360178029043
+num__female_labor_force_participation,0.21411839468347635
+num__female_labor_force_participation_lag5,0.12707721246249826
+num__gdp_per_capita,0.07507476865787546
+cat__country_group_developed,0.0650413685775742
+num__marriage_rate,0.045494227429880255
+num__unemployment_total,0.04484717879458278
+num__unemployment_total_lag2,0.038449227574188206
+num__gdp_per_capita_lag5,0.02738970308098475
+num__inflation_lag4,0.026725826357493095
+num__marriage_rate_lag2,0.02617877663695357
+cat__country_group_transition,0.024866808732553217
+num__inflation,0.015282905231649399

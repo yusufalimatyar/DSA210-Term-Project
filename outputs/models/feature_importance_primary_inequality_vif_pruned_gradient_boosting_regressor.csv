@@ -1,0 +1,19 @@
+feature,importance
+cat__country_group_developed,0.2727600080171211
+cat__income_level_High income,0.1863104975244055
+cat__income_level_Upper middle income,0.14008930146314671
+num__income_share_top10,0.09822557172690072
+num__gdp_per_capita,0.08338041808848207
+num__unemployment_total,0.06325318097494036
+cat__country_group_special_case,0.03429276381148038
+num__inflation,0.03277490412170459
+cat__region_tag_Latin America,0.03135401478486549
+cat__region_tag_Western Europe,0.019793235867331047
+cat__region_tag_Oceania,0.01971113343206621
+cat__region_tag_Northern Europe,0.006676808270503824
+cat__region_tag_North America,0.005978491860757967
+cat__country_group_transition,0.0031354310034592725
+cat__region_tag_Eastern Europe,0.0011357360009482927
+cat__region_tag_East Asia,0.0006163969080389992
+cat__region_tag_Southern Europe,0.0005121061438474075
+cat__region_tag_Middle East,0.0

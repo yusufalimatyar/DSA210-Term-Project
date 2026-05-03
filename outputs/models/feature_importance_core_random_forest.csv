@@ -1,0 +1,9 @@
+feature,importance
+num__female_labor_force_participation,0.3239837511278685
+cat__country_group_special_case,0.278033325149635
+num__gdp_per_capita,0.11768745358594467
+num__marriage_rate,0.09844008386908297
+num__unemployment_total,0.06690708668478791
+cat__country_group_transition,0.0421230048076578
+num__inflation,0.036465823578856645
+cat__country_group_developed,0.03635947119616655
