@@ -1,13 +1,4 @@
----
-tags:
-  - project
-created: 2026-05-18
-cover:
----
-
-
-![[Unknown 2.jpg]]
-
+**Live Demo:** [Interactive Website](https://rococo-arithmetic-2c8174.netlify.app)
 
 # **Fertility Rate Dynamics in OECD Countries (2000–2024)  
 A Panel Data Analysis of Economic, Social, and Inequality Factors**
