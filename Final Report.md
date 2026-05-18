@@ -1,4 +1,4 @@
-**Live Demo:** [Interactive Website](https://rococo-arithmetic-2c8174.netlify.app)
+## **Live Demo:** [Interactive Website](https://rococo-arithmetic-2c8174.netlify.app)
 
 # **Fertility Rate Dynamics in OECD Countries (2000–2024)  
 A Panel Data Analysis of Economic, Social, and Inequality Factors**
@@ -60,6 +60,16 @@ The machine learning component was designed to evaluate the out-of-sample pre
 Strongest positive channel is **marriage_rate (lag=2)** . Strong negative channel is **gdp_per_capita (lag=5)** and **female_labor_force_participation (lag=5)**. Unemployment has weak negative delayed relation. Inflation has sign/magnitude sensitive; weaker than expected relation. Inequality variables have weak and mostly non-robust relation with hypothesis direction
 Pooled correlations mix between-country and within-country effects. Some variables reverse sign when switching to within-country framework. 
 Fertility response appears **slow-moving** (2–5 year lags), consistent with family planning behavior. Marriage remains a central institutional/social channel. Economic modernization variables (GDP, female labor participation) show expected long-run negative association in within-country setting.
+
+##### Hypothesis Test Summary Chart
+
+```mermaid
+pie showData
+    title Hypothesis Test Outcomes (H1-H9)
+    "Supported" : 6
+    "Not Supported" : 3
+```
+
 ##### ML Performance
 Good fit pre-COVID but much weaker/negative R² post-COVID. This is because of the structural break that covid caused. It is nor a regime shift or algorithmic underfitting. Emphasizing this result (negative R² values) is a deliberate choice and necessity of academic honesty. One practical takeaway is that macro variables alone are insufficent to explain the decline in fertility rates. Predictive modeling is constrained by:
 
